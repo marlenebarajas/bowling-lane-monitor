@@ -11,20 +11,20 @@ public class Bowler extends Observable {
         this.name = name;
     }
 
-    private void setName(String name){
+    public void setName(String name){
         this.name = name;
     }
 
-    private String getName(){
+    public String getName(){
         return name;
     }
 
-    private void setScore(int score){
+    public void setScore(int score){
         this.score = score;
         setChanged();
         notifyObservers();
     }
-    private int getScore(){
+    public int getScore(){
         return score;
     }
 

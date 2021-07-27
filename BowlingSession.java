@@ -1,42 +1,52 @@
 package BowlingScoreboard;
 
-import java.util.Observable;
-import java.util.Observer;
+import javax.swing.*;
+import java.awt.*;
 
-public class BowlingSession implements Observer {
-    private PinState pins;
-    private boolean active; //is a game currently running?
+public class BowlingSession {
+    //session parameters
+    private static BowlingSession session = null;
+    private static PinState pins = PinState.getInstance();;
+    private static Bowler[] bowlers;
+    private static int bowlerLimit;
 
-    //MAYBE ITS OWN MODEL:
-    private String[] bowlers;
+    //running session info
+    private boolean active;
     private int numOfBowlers;
     private int frame;
-    private int playerTurn;
+    private int bowlerTurn;
 
-    public BowlingSession(){
-        pins = PinState.getInstance();
-        //render appropriate frames
+    public BowlingSession(int limit){
+        bowlerLimit = limit;
+        bowlers = new Bowler[bowlerLimit];
+        createAndShowGUI();
     }
 
-    public void simulateGame(){
-        //we call PinState.roll() for the hardware;
+    public static BowlingSession getInstance(int limit){
+        if (session == null) {
+            synchronized (BowlingSession.class) {
+                if (session == null) {
+                    session = new BowlingSession(limit);
+                }
+            }
+        }
+        return session;
     }
 
-    public void runGame(){
-        //in a real game, hardware calls PinState.roll() and we wait for update
+    private static void createAndShowGUI(){
+        //Create and set up the window.
+        JFrame frame = new JFrame("Bowling Session");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setMinimumSize(new Dimension(800,400));
+        frame.setPreferredSize(new Dimension(800,400));
+        //frame.setLayout(new GridLayout(0, 2));
 
-    }
+        //Add content to the window.
+        frame.add(new PinView(pins.state), BorderLayout.LINE_START);
+        frame.add(new BowlersView(bowlers, bowlerLimit),BorderLayout.CENTER);
 
-    public static void main(String[] args){
-        //Create panels that all change according to pinState
-        //  pinState.addObserver(this);
-
-        //create JButton that runs simulateGame() and another that runs runGame
-        //  this rerenders part of the window appropriately
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        //called when PinState changes
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
     }
 }

@@ -4,12 +4,12 @@ import java.util.Observable;
 
 public class PinState extends Observable {
     private static PinState pinState = null;
-    Boolean[] pins;
+    Boolean[] state;
 
     private PinState(){
         //connect to hardware?
         //would ensure hardware is at the appropriate state to start game
-        this.pins = new Boolean[]{true, true, true, true, true, true, true, true, true, true};
+        this.state = new Boolean[]{true, true, true, true, true, true, true, true, true, true};
     }
 
     public static PinState getInstance(){
@@ -28,7 +28,7 @@ public class PinState extends Observable {
      * @param update array of 10 booleans defining whether n-th pin is standing
      */
     private void roll(Boolean[] update){
-        this.pins = update.clone();
+        this.state = update.clone();
         setChanged();
         notifyObservers();
     }
