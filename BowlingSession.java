@@ -1,25 +1,27 @@
 package BowlingScoreboard;
 
-import javax.swing.*;
-import java.awt.*;
+import java.util.Observable;
+import java.util.Observer;
 
-public class BowlingSession {
+public class BowlingSession extends Observable implements Observer {
     //session parameters
     private static BowlingSession session = null;
-    private static PinState pins = PinState.getInstance();;
+    private static final PinState pins = PinState.getInstance();
     private static Bowler[] bowlers;
-    private static int bowlerLimit;
+    private int bowlerLimit = 8;
 
     //running session info
-    private boolean active;
-    private int numOfBowlers;
-    private int frame;
-    private int bowlerTurn;
+    private boolean active = false; //is the game currently running?
+    private int numOfBowlers = 0; //how many players in session
+    private int frame; //the current frame
+    private int roll; //the current roll, within the frame
+    private int bowlerTurn; // idx of what bowler is waiting to roll
+
 
     public BowlingSession(int limit){
-        bowlerLimit = limit;
+        pins.addObserver(this);
+        this.bowlerLimit = limit;
         bowlers = new Bowler[bowlerLimit];
-        createAndShowGUI();
     }
 
     public static BowlingSession getInstance(int limit){
@@ -33,20 +35,64 @@ public class BowlingSession {
         return session;
     }
 
-    private static void createAndShowGUI(){
-        //Create and set up the window.
-        JFrame frame = new JFrame("Bowling Session");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setMinimumSize(new Dimension(800,400));
-        frame.setPreferredSize(new Dimension(800,400));
-        //frame.setLayout(new GridLayout(0, 2));
+    public void setActive(boolean tf){
+        this.active = tf;
+        setChanged();
+        notifyObservers(tf);
+    }
 
-        //Add content to the window.
-        frame.add(new PinView(pins.state), BorderLayout.LINE_START);
-        frame.add(new BowlersView(bowlers, bowlerLimit),BorderLayout.CENTER);
+    public void setFrame(int frame){
+        this.frame = frame;
+    }
 
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
+    public void setBowlerLimit(int limit){
+        this.bowlerLimit = limit;
+    }
+
+    public boolean[] getState(){
+        return pins.state.clone();
+    }
+
+    public int getBowlerLimit(){
+        return bowlerLimit;
+    }
+
+    public Bowler[] getBowlers(){
+        return bowlers;
+    }
+
+    public void addBowler(Bowler bowler){
+        bowlers[numOfBowlers] = bowler;
+        ++numOfBowlers;
+        //potentially update, for bowlersView?
+        setChanged();
+        notifyObservers(false);
+    }
+
+    /**
+     * Ends game and decides winner
+     */
+    public void finish(){
+
+    }
+
+    /**
+     * Resets session info to defaults
+     */
+    public void reset(){
+        //remember to reset pinstate
+        pins.reset();
+        this.numOfBowlers=0;
+        bowlers = new Bowler[bowlerLimit];
+    }
+
+    /**
+     * Called when PinState changes, signaling that a roll was thrown.
+     * @param o PinState
+     * @param arg int with the score the most recent roll received
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        if(arg!=null) bowlers[bowlerTurn].addRoll(frame, roll, (Integer) arg);
     }
 }

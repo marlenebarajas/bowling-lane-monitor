@@ -5,7 +5,7 @@ import java.util.Observable;
 public class Bowler extends Observable {
     private String name;
     private int score = 0;
-    private boolean active = true;
+    private boolean active = false;
 
     public Bowler(String name){
         this.name = name;
@@ -19,17 +19,17 @@ public class Bowler extends Observable {
         return name;
     }
 
-    public void setScore(int score){
-        this.score = score;
+    /**
+     * Updates BowlerView to correctly display frame information
+     * @param score
+     */
+    public void addRoll(int frame, int roll, int score){
+        this.score += score;
         setChanged();
-        notifyObservers();
+        notifyObservers(new int[]{frame, roll, score});
     }
     public int getScore(){
         return score;
-    }
-
-    private void deactivate(){
-        this.active = false;
     }
 
     /**

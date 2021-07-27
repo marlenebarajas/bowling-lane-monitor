@@ -9,14 +9,18 @@ import java.awt.*;
  * Two different versions, for when the game is ongoing and otherwise.
  */
 public class BowlersView extends JPanel {
-    JButton startGame;
-    JButton endGame;
-    int bowlerLimit;
+    SessionController controller;
+    Bowler[] bowlers; int bowlerLimit;
 
-    public BowlersView(Bowler[] bowlers, int limit){
-        bowlerLimit = limit;
-        startGame = startGameBtn(bowlers);
-        endGame = endGameBtn();
+    JTextField nameInput; Component nameField; Component addBowler;
+    Component removeBowler;
+
+    public BowlersView(SessionController controller, Bowler[] bowlers, int limit){
+        this.controller = controller;
+        this.bowlers = bowlers;
+        this.bowlerLimit = limit;
+        addBowler = addBowlerBtn();
+        nameField = nameField();
 
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createCompoundBorder(
@@ -24,37 +28,60 @@ public class BowlersView extends JPanel {
                 BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Bowlers"),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10))
         );
-        render(bowlers, true);
+        render(true);
     }
 
-    private void render(Bowler[] bowlers, boolean editable){
+    public void render(boolean editable){
         removeAll();
-        if(editable){
-            add(new BowlersViewSetup(bowlers, bowlerLimit), BorderLayout.PAGE_START);
-            add(startGame, BorderLayout.PAGE_END);
-        } else{
-            add(new BowlersViewOngoingGame(bowlers), BorderLayout.PAGE_START);
-            add(endGame, BorderLayout.PAGE_END);
-        }
+        add(createBowlerList(editable), BorderLayout.PAGE_START);
         revalidate();
         repaint();
     }
 
-    private JButton startGameBtn(Bowler[] bowlers){
-        JButton button = new JButton("Start Game");
-        button.addActionListener(e -> render(bowlers,false));
-        return button;
+    private JPanel createBowlerList(boolean editable){
+        JPanel showBowlers = new JPanel();
+        showBowlers.setLayout(new BoxLayout(showBowlers, BoxLayout.PAGE_AXIS));
+
+        int i;
+        for(i=0; i<bowlers.length;i++){
+            if(bowlers[i]!=null){
+                showBowlers.add(new BowlerView(i, bowlers[i]));
+            }
+            else break;
+        }
+        if((i)!=bowlerLimit && editable){
+            showBowlers.add(nameField);
+            showBowlers.add(addBowler);
+        }
+        return showBowlers;
     }
 
-    private JButton endGameBtn(){
-        JButton button = new JButton("End Game");
-        return button;
+    private Component addBowlerBtn() {
+        JButton button = new JButton("Add Bowler");
+        button.addActionListener(e -> controller.createBowler(nameInput.getText()));
+        button.setPreferredSize(new Dimension(Short.MAX_VALUE, 40));
+        button.setMaximumSize(new Dimension(Short.MAX_VALUE, 40));
+
+        Box box = Box.createHorizontalBox();
+        box.add(button);
+        box.setAlignmentX(Component.LEFT_ALIGNMENT);
+        box.add(Box.createHorizontalGlue());
+        box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        return box;
     }
 
-    /**
-     * Locks the ability to add new bowlers.
-     */
-    private void lockBowlers(){
+    private Component nameField(){
+        nameInput = new JTextField("Enter Name");
+        nameInput.setPreferredSize(new Dimension(Short.MAX_VALUE,40));
+        nameInput.setMinimumSize(new Dimension(400, 40));
+        nameInput.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 
+        Box box = Box.createHorizontalBox();
+        box.add(nameInput);
+        box.add(Box.createHorizontalGlue());
+        box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        return box;
     }
+
+
 }

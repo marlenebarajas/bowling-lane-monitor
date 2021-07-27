@@ -22,83 +22,77 @@ public class FramesView extends JPanel {
     }
 
     private void initialize(){
-        for(int i=0; i<10; i++){
-            JPanel frame = new JPanel();
-            frame.setLayout(new BoxLayout(frame, BoxLayout.LINE_AXIS));
-            frame.add(Box.createHorizontalGlue());
-            frame.setPreferredSize(new Dimension(50, 50));
-            frame.setMinimumSize(new Dimension(50, 50));
-            frame.setBorder(BorderFactory.createMatteBorder(2,2,2,2, Color.black));
-
-            Box firstRoll = Box.createHorizontalBox();
-            firstRoll.add(Box.createVerticalGlue());
-            firstRoll.add(new JLabel(" "));
-            firstRoll.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createEmptyBorder(0,0,25,0),
-                    BorderFactory.createMatteBorder(1,1,1,1, Color.black)
-            ));
-            firstRoll.setPreferredSize(new Dimension(20, 20));
-
-            Box secondRoll = Box.createHorizontalBox();
-            secondRoll.add(Box.createVerticalGlue());
-            secondRoll.add(new JLabel(" "));
-            secondRoll.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createEmptyBorder(0,0,25,0),
-                    BorderFactory.createMatteBorder(1,1,1,1, Color.black)
-            ));
-            secondRoll.setPreferredSize(new Dimension(20, 20));
-
-            frame.add(firstRoll);
-            frame.add(secondRoll);
+        for(int i=0; i<9; i++){
+            JPanel frame = createFrame();
+            addRollBox(frame, 0);
+            addRollBox(frame, 0);
             frames[i] = frame;
         }
+        //tenth frame has three rolls
+        JPanel frame = createFrame();
+        addRollBox(frame, 0);
+        addRollBox(frame, 0);
+        addRollBox(frame, 0);
+        frames[9] = frame;
+    }
 
+    private JPanel createFrame(){
+        JPanel frame = new JPanel();
+        frame.setLayout(new BoxLayout(frame, BoxLayout.LINE_AXIS));
+        frame.add(Box.createHorizontalGlue());
+        frame.setPreferredSize(new Dimension(50, 50));
+        frame.setMinimumSize(new Dimension(50, 50));
+        frame.setBorder(BorderFactory.createMatteBorder(2,2,2,2, Color.black));
+
+        return frame;
+    }
+
+    private void addRollBox(JPanel frame, int score){
+        Box roll = Box.createHorizontalBox();
+        roll.add(Box.createVerticalGlue());
+        if(score==0) roll.add(new JLabel(" "));
+        else roll.add(new JLabel(" "+score));
+        roll.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(0,0,25,0),
+                BorderFactory.createMatteBorder(1,1,1,1, Color.black)
+        ));
+        roll.setPreferredSize(new Dimension(20, 20));
+        frame.add(roll);
     }
 
     /**
      *
      * @param frame (n-1)th frame in frames[], to be updated
-     * @param firstScore
-     * @param secondScore
+     * @param roll int 1, 2, or 3
+     * @param score int point value of most recent roll
      */
-    private void setFrame(int frame, int firstScore, int secondScore){
-        JPanel updatedFrame = new JPanel();
-        updatedFrame.setLayout(new BoxLayout(updatedFrame, BoxLayout.LINE_AXIS));
-        updatedFrame.add(Box.createHorizontalGlue());
-        updatedFrame.setPreferredSize(new Dimension(50, 50));
-        updatedFrame.setMinimumSize(new Dimension(50, 50));
-        updatedFrame.setBorder(BorderFactory.createMatteBorder(2,2,2,2, Color.black));
-
-        Box firstRoll = Box.createHorizontalBox();
-        firstRoll.add(Box.createVerticalGlue());
-        if(firstScore!=0){
-            firstRoll.add(new JLabel(" "+firstScore));
-        } else{
-            firstRoll.add(new JLabel(" "));
+    public void setFrame(int frame, int roll, int score){
+        JPanel updatedFrame = createFrame();
+        if(frame!=10){
+            if(roll==1){
+                addRollBox(updatedFrame, score);
+                addRollBox(updatedFrame, 0);
+            } else{
+                addRollBox(updatedFrame, 0);
+                addRollBox(updatedFrame, score);
+            }
+            frames[frame-1] = updatedFrame;
+        }else{
+            if(roll==1){
+                addRollBox(updatedFrame, score);
+                addRollBox(updatedFrame, 0);
+                addRollBox(updatedFrame, 0);
+            }else if(roll==2){
+                addRollBox(updatedFrame, 0);
+                addRollBox(updatedFrame, score);
+                addRollBox(updatedFrame, 0);
+            }else{
+                addRollBox(updatedFrame, 0);
+                addRollBox(updatedFrame, 0);
+                addRollBox(updatedFrame, score);
+            }
+            frames[9] = updatedFrame;
         }
-
-        firstRoll.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(0,0,25,0),
-                BorderFactory.createMatteBorder(1,1,1,1, Color.black)
-        ));
-        firstRoll.setPreferredSize(new Dimension(20, 20));
-
-        Box secondRoll = Box.createHorizontalBox();
-        secondRoll.add(Box.createVerticalGlue());
-        if(secondScore!=0){
-            secondRoll.add(new JLabel(" "+secondScore));
-        } else{
-            secondRoll.add(new JLabel(" "));
-        }
-        secondRoll.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(0,0,25,0),
-                BorderFactory.createMatteBorder(1,1,1,1, Color.black)
-        ));
-        secondRoll.setPreferredSize(new Dimension(20, 20));
-
-        updatedFrame.add(firstRoll);
-        updatedFrame.add(secondRoll);
-        frames[frame-1] = updatedFrame;
         render();
     }
 }

@@ -8,11 +8,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class PinView extends JPanel implements Observer {
-    Boolean[] pinState;
+    boolean[] pinState;
     JLabel display;
     //visual representation of pins that updates with pinstate changes
 
-    public PinView(Boolean[] pinState){
+    public PinView(boolean[] pinState){
         this.pinState = pinState;
 
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
