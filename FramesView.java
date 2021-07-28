@@ -61,7 +61,6 @@ public class FramesView extends JPanel {
     }
 
     /**
-     *
      * @param frame (n-1)th frame in frames[], to be updated
      * @param roll int 1, 2, or 3
      * @param score int point value of most recent roll

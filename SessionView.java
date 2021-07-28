@@ -10,7 +10,6 @@ public class SessionView implements Observer {
     SessionController sessionController;
     private boolean active = false; //is this game active?
 
-    //Components
     JFrame frame;
     PinView pins;
     BowlersView bowlers;
@@ -27,8 +26,8 @@ public class SessionView implements Observer {
         //Create and set up the window.
         frame = new JFrame("Bowling Session");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setMinimumSize(new Dimension(800,400));
-        frame.setPreferredSize(new Dimension(800,400));
+        frame.setMinimumSize(new Dimension(1200,800));
+        frame.setPreferredSize(new Dimension(1200,800));
 
         //Create content for window.
         this.pins = new PinView(session.getState());
@@ -63,15 +62,14 @@ public class SessionView implements Observer {
         if((boolean) arg){
             this.active = true;
             bowlers.render(false);
-            controls.setStart();
+            controls.showEnd();
         } else{
             if(active){ //game is JUST over!
                 //show results
                 //display button to start a new session that calls reset();
                 reset();
-                controls.setEnd();
-            }
-            else bowlers.render(true);
+                controls.showStart();
+            } else bowlers.render(true);
         }
     }
 }

@@ -1,5 +1,6 @@
 package BowlingScoreboard;
 
+import java.util.Arrays;
 import java.util.Observable;
 
 //PinStateController?
@@ -29,7 +30,7 @@ public class PinState extends Observable {
      * Takes in new state of pins in the lane after a roll and calculates the score earned
      * @param update array of 10 booleans defining whether n-th pin is standing
      */
-    private void roll(boolean[] update){
+    public void roll(boolean[] update){
         int score = 0;
         for(int i=0; i<10; i++){
             boolean pin = update[i];
@@ -47,7 +48,5 @@ public class PinState extends Observable {
      */
     public void reset(){
         this.state = new boolean[]{true, true, true, true, true, true, true, true, true, true};
-        setChanged();
-        notifyObservers();
     }
 }
