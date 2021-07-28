@@ -1,4 +1,7 @@
-package BowlingScoreboard;
+package BowlingScoreboard.views;
+
+import BowlingScoreboard.models.Bowler;
+import BowlingScoreboard.controllers.SessionController;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -11,14 +14,15 @@ import java.awt.*;
 public class BowlersView extends JPanel {
     SessionController controller;
     Bowler[] bowlers; int bowlerLimit;
+    BowlerView[] views;
 
     JTextField nameInput; Component nameField; Component addBowler;
-    Component removeBowler;
 
     public BowlersView(SessionController controller, Bowler[] bowlers, int limit){
         this.controller = controller;
-        this.bowlers = bowlers;
         this.bowlerLimit = limit;
+        this.bowlers = bowlers;
+        this.views = new BowlerView[limit];
         addBowler = addBowlerBtn();
         nameField = nameField();
 
@@ -31,25 +35,32 @@ public class BowlersView extends JPanel {
         render(true);
     }
 
+    /**
+     * Displays every BowlerView in views
+     */
     public void render(boolean editable){
         removeAll();
-        add(createBowlerList(editable), BorderLayout.PAGE_START);
+        add(bowlerList(editable),BorderLayout.PAGE_START);
         revalidate();
         repaint();
     }
 
-    private JPanel createBowlerList(boolean editable){
+    private JPanel bowlerList(boolean editable){
         JPanel showBowlers = new JPanel();
         showBowlers.setLayout(new BoxLayout(showBowlers, BoxLayout.PAGE_AXIS));
 
-        int i;
-        for(i=0; i<bowlers.length;i++){
+        int count = 0;
+        for(int i=0; i<bowlerLimit;i++){
             if(bowlers[i]!=null){
-                showBowlers.add(new BowlerView(i, bowlers[i]));
-            }
-            else break;
+                count++;
+                if(views[i]==null) views[i] = new BowlerView(i, bowlers[i]);
+                if(bowlers[i].isActive()){
+                    views[i].setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.blue));
+                    showBowlers.add(views[i]);
+                } else showBowlers.add(views[i]);
+            } else break;
         }
-        if((i)!=bowlerLimit && editable){
+        if(count!=bowlerLimit && editable){
             showBowlers.add(nameField);
             showBowlers.add(addBowler);
         }
@@ -82,6 +93,4 @@ public class BowlersView extends JPanel {
         box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         return box;
     }
-
-
 }

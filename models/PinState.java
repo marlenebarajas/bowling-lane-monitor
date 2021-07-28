@@ -1,6 +1,5 @@
-package BowlingScoreboard;
+package BowlingScoreboard.models;
 
-import java.util.Arrays;
 import java.util.Observable;
 
 //PinStateController?

@@ -1,4 +1,4 @@
-package BowlingScoreboard;
+package BowlingScoreboard.models;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -42,7 +42,7 @@ public class BowlingSession extends Observable implements Observer {
     public void setActive(boolean tf){
         this.active = tf;
         setChanged();
-        notifyObservers(tf);
+        notifyObservers(tf); //notifies SessionView
     }
 
     public void setFrame(int frame){
@@ -80,9 +80,8 @@ public class BowlingSession extends Observable implements Observer {
     public void addBowler(Bowler bowler){
         bowlers[numOfBowlers] = bowler;
         ++numOfBowlers;
-        //potentially update, for bowlersView?
         setChanged();
-        notifyObservers(false);
+        notifyObservers(false); //updates SessionView
     }
 
     /** NEEDS LOOKED AT
@@ -113,9 +112,11 @@ public class BowlingSession extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if(arg!=null){
+            bowlers[bowlerTurn].setActive(true);
             bowlers[bowlerTurn].addRoll(frame, roll, (Integer) arg);
             if(frame<10){ //two rolls per frame
                 if(roll==2) {
+                    bowlers[bowlerTurn].setActive(false);
                     roll=1;
                     pins.reset();
                     if(bowlerTurn==(numOfBowlers-1)){
@@ -125,6 +126,7 @@ public class BowlingSession extends Observable implements Observer {
                 } else roll++;
             } else{ //three rolls in the last frame
                 if(roll==3) {
+                    bowlers[bowlerTurn].setActive(false);
                     roll = 1;
                     pins.reset();
                     if (bowlerTurn == (numOfBowlers-1)) {

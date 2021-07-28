@@ -1,4 +1,7 @@
-package BowlingScoreboard;
+package BowlingScoreboard.views;
+
+import BowlingScoreboard.models.BowlingSession;
+import BowlingScoreboard.controllers.SessionController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +34,9 @@ public class SessionView implements Observer {
 
         //Create content for window.
         this.pins = new PinView(session.getState());
+
         this.bowlers = new BowlersView(sessionController, session.getBowlers(), session.getBowlerLimit());
+
         this.controls = new SessionControlsView(sessionController);
         //Add content to the window.
         frame.add(pins, BorderLayout.LINE_START);
@@ -71,5 +76,8 @@ public class SessionView implements Observer {
                 controls.showStart();
             } else bowlers.render(true);
         }
+
+        //also update PinView here
+        pins.render(session.getState());
     }
 }

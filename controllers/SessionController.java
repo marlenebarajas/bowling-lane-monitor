@@ -1,8 +1,12 @@
-package BowlingScoreboard;
+package BowlingScoreboard.controllers;
+
+import BowlingScoreboard.models.Bowler;
+import BowlingScoreboard.models.BowlingSession;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
+
 
 public class SessionController {
     BowlingSession session;
@@ -20,7 +24,10 @@ public class SessionController {
         session.setActive(true);
     }
 
-    public void simulate(){
+    /**
+     * Simulates a game between current bowlers without the use of hardware input
+     */
+    public void simulate() {
         if(session.getBowlers()[0]==null){
             createError("Cannot run simulation without any bowlers. Please add bowlers and try again.");
             return;
@@ -30,6 +37,12 @@ public class SessionController {
 
         while(session.isActive()){
             session.setState(randomRoll());
+//            delay to mimic hardware delay
+            long startTime = System.currentTimeMillis();
+            long endTime = System.currentTimeMillis();
+            while((endTime-startTime)<3000){
+                endTime = System.currentTimeMillis();
+            }
         }
     }
 
@@ -54,7 +67,7 @@ public class SessionController {
     }
 
     public void end(){
-        session.finish(); //maybe do here?
+        session.finish();
         session.reset();
     }
 
@@ -68,7 +81,7 @@ public class SessionController {
     }
 
     /**
-     *
+     * Fires an error window
      */
     private void createError(String msg){
         JFrame error = new JFrame();

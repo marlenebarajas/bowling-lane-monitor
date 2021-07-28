@@ -1,4 +1,6 @@
-package BowlingScoreboard;
+package BowlingScoreboard.views;
+
+import BowlingScoreboard.controllers.SessionController;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package BowlingScoreboard;
+package BowlingScoreboard.models;
 
 import java.util.Observable;
 
@@ -32,11 +32,15 @@ public class Bowler extends Observable {
         return score;
     }
 
+    public void setActive(boolean tf){
+        this.active = tf;
+    }
+
     /**
      * Specifies whether Bowler is still actively participating in the bowling game.
      * @return True if Bowler is still in bowling session, False otherwise
      */
-    private boolean isActive(){
+    public boolean isActive(){
         return active;
     }
 }

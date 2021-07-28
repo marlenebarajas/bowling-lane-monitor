@@ -1,4 +1,6 @@
-package BowlingScoreboard;
+package BowlingScoreboard.views;
+
+import BowlingScoreboard.models.Bowler;
 
 import javax.swing.*;
 import java.awt.*;
