@@ -48,7 +48,11 @@ public class SessionView implements Observer {
         frame.setVisible(true);
     }
 
-    public void reset(){
+    private void finish(){
+
+    }
+
+    private void reset(){
         frame.remove(bowlers);
         this.active = false;
         this.bowlers = new BowlersView(sessionController, session.getBowlers(), session.getBowlerLimit());
@@ -69,11 +73,13 @@ public class SessionView implements Observer {
             bowlers.render(false);
             controls.showEnd();
         } else{
-            if(active){ //game is JUST over!
+            if(active){ // a game session just ended
                 //show results
                 //display button to start a new session that calls reset();
+                finish();
                 reset();
                 controls.showStart();
+                this.active = false;
             } else bowlers.render(true);
         }
 

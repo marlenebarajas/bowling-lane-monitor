@@ -1,7 +1,5 @@
 package BowlingScoreboard.views;
 
-import BowlingScoreboard.views.FrameView;
-
 import javax.swing.*;
 
 public class FramesView extends JPanel {

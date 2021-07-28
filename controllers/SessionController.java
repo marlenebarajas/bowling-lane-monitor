@@ -15,10 +15,9 @@ public class SessionController {
         this.session = session;
     }
 
-    private void setup(){
-
-    }
-
+    /**
+     * Starts bowling session with current bowlers
+     */
     public void start(){
         session.setFrame(1);
         session.setActive(true);
@@ -66,13 +65,15 @@ public class SessionController {
         return newState;
     }
 
+    /**
+     * Ends current bowling session
+     */
     public void end(){
-        session.finish();
         session.reset();
     }
 
     /**
-     * Adds bowlers to Bowling Session
+     * Adds bowlers to current bowling session
      * @param name String, Bowler's name
      */
     public void createBowler(String name){

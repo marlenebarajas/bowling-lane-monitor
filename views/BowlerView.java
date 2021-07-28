@@ -4,6 +4,7 @@ import BowlingScoreboard.models.Bowler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -36,6 +37,7 @@ public class BowlerView extends JPanel implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         int[] params = (int[]) arg;
+        System.out.println(Arrays.toString(params));
         frames.setFrame(params[0],params[1],params[2]);
     }
 }

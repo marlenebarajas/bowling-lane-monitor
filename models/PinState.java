@@ -2,8 +2,6 @@ package BowlingScoreboard.models;
 
 import java.util.Observable;
 
-//PinStateController?
-//HardwareController?
 public class PinState extends Observable {
     private static PinState pinState = null;
     boolean[] state;

@@ -9,14 +9,12 @@ public class BowlingSession extends Observable implements Observer {
     private static final PinState pins = PinState.getInstance();
     private static Bowler[] bowlers;
     private int bowlerLimit = 8;
-
     //running session info
     private boolean active = false; //is the game currently running?
     private int numOfBowlers = 0; //how many players in session
     private int frame = 1; //the current frame
     private int roll = 1; //the current roll, within the frame
     private int bowlerTurn = 0; // idx of what bowler is waiting to roll
-
 
     public BowlingSession(int limit){
         pins.addObserver(this);
@@ -84,13 +82,6 @@ public class BowlingSession extends Observable implements Observer {
         notifyObservers(false); //updates SessionView
     }
 
-    /** NEEDS LOOKED AT
-     * Ends game and decides winner
-     */
-    public void finish(){
-        //calculate winner?
-    }
-
     /**
      * Resets session info to defaults
      */
@@ -114,7 +105,7 @@ public class BowlingSession extends Observable implements Observer {
         if(arg!=null){
             bowlers[bowlerTurn].setActive(true);
             bowlers[bowlerTurn].addRoll(frame, roll, (Integer) arg);
-            if(frame<10){ //two rolls per frame
+            if(frame<10){ //two rolls per frames 1-9
                 if(roll==2) {
                     bowlers[bowlerTurn].setActive(false);
                     roll=1;
@@ -129,9 +120,7 @@ public class BowlingSession extends Observable implements Observer {
                     bowlers[bowlerTurn].setActive(false);
                     roll = 1;
                     pins.reset();
-                    if (bowlerTurn == (numOfBowlers-1)) {
-                        //end game
-                        finish();
+                    if (bowlerTurn == (numOfBowlers-1)) { //end condition
                         reset();
                     } else bowlerTurn++;
                 } else roll++;

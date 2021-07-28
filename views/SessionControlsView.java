@@ -24,6 +24,9 @@ public class SessionControlsView extends JPanel {
         add(startGame);
     }
 
+    /**
+     * Displays control to end a bowling session
+     */
     public void showEnd(){
         removeAll();
         add(endGame);
@@ -31,6 +34,9 @@ public class SessionControlsView extends JPanel {
         repaint();
     }
 
+    /**
+     * Displays controls to start a bowling session
+     */
     public void showStart(){
         removeAll();
         add(simulate);
@@ -38,8 +44,6 @@ public class SessionControlsView extends JPanel {
         revalidate();
         repaint();
     }
-
-
 
     private JButton startGameBtn(){
         JButton button = new JButton("Start Game");
