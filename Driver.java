@@ -1,10 +1,13 @@
 package BowlingScoreboard;
 
-import BowlingScoreboard.models.BowlingSession;
+import BowlingScoreboard.controllers.SessionController;
+import BowlingScoreboard.models.BowlingGame;
+import BowlingScoreboard.models.PinState;
 import BowlingScoreboard.views.SessionView;
 
 public class Driver {
     public static void main(String[] args) {
-        SessionView gui = new SessionView(BowlingSession.getInstance(8));
+        SessionController controller = new SessionController(PinState.getInstance(), new BowlingGame(8));
+        new SessionView(controller);
     }
 }

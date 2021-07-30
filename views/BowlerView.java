@@ -4,18 +4,30 @@ import BowlingScoreboard.models.Bowler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Observable;
-import java.util.Observer;
 
-public class BowlerView extends JPanel implements Observer {
-    FramesView frames = new FramesView();
+/**
+ * Renders individual bowler information, including name and frame scores.
+ */
+public class BowlerView extends JPanel{
+    Bowler bowler;
+    Component name;
+    FramesView frames;
 
     public BowlerView(int idx, Bowler bowler){
-        bowler.addObserver(this);
+        this.bowler = bowler;
+        name = createBowlerLabel(idx, bowler);
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        add(createBowlerLabel(idx, bowler));
+
+        render();
+    }
+
+    private void render(){
+        removeAll();
+        add(name);
+        frames = new FramesView(bowler.getScores(), bowler.getScore());
         add(frames);
+        revalidate();
+        repaint();
     }
 
     private Component createBowlerLabel(int idx, Bowler bowler){
@@ -29,15 +41,4 @@ public class BowlerView extends JPanel implements Observer {
         return box;
     }
 
-    /**
-     * Called when Bowler's score changes and frame information needs updating
-     * @param o Bowler
-     * @param arg int[3], where 0 = frame the roll was taken in, 1 = (first/second/third) roll, 2 = score received from the roll
-     */
-    @Override
-    public void update(Observable o, Object arg) {
-        int[] params = (int[]) arg;
-        System.out.println(Arrays.toString(params));
-        frames.setFrame(params[0],params[1],params[2]);
-    }
 }

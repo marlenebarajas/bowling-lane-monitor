@@ -4,43 +4,63 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FrameView extends JPanel {
-    Component firstRoll;
-    Component secondRoll;
-    Component thirdRoll;
-    boolean hasThirdRoll;
 
-    public FrameView(boolean tenth){
+    /**
+     * Constructor with only two roll-score spaces, for frames 1-9
+     * @param total Bowler's total score
+     */
+    public FrameView(int total){
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        add(Box.createHorizontalGlue());
+        setPreferredSize(new Dimension(50, 50));
+        setMinimumSize(new Dimension(50, 50));
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(2,2,2,2, Color.black),
+                BorderFactory.createEmptyBorder(20,2,15,2)
+                ));
+
+        add(new JLabel(String.valueOf(total)), BorderLayout.PAGE_END);
+        add(Box.createHorizontalGlue());
+    }
+
+    /**
+     * Constructor with only two roll-score spaces, for frames 1-9
+     * @param first score obtained for first roll
+     * @param second score obtained for second roll
+     */
+    public FrameView(int first, int second){
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         add(Box.createHorizontalGlue());
         setPreferredSize(new Dimension(50, 50));
         setMinimumSize(new Dimension(50, 50));
         setBorder(BorderFactory.createMatteBorder(2,2,2,2, Color.black));
 
-        this.hasThirdRoll = tenth;
-        initialize();
-        render();
-    }
-
-    /**
-     * Adds 2 empty roll-score boxes to the frame; adds 3 if this.FrameView represents the 10th frame
-     */
-    private void initialize(){
-        this.firstRoll = createRollBox(0);
-        this.secondRoll = createRollBox(0);
-        if(hasThirdRoll()) this.thirdRoll = createRollBox(0);
-    }
-
-    /**
-     * Displays FrameView
-     */
-    private void render(){
-        removeAll();
+        int total = first+second;
+        add(new JLabel(String.valueOf(total)), BorderLayout.PAGE_END);
         add(Box.createHorizontalGlue());
-        add(firstRoll);
-        add(secondRoll);
-        if(hasThirdRoll) add(thirdRoll);
-        revalidate();
-        repaint();
+        add(createRollBox(first));
+        add(createRollBox(second));
+    }
+
+    /**
+     * Constructor with only three roll-score spaces, for frame 10
+     * @param first score obtained for first roll
+     * @param second score obtained for second roll
+     * @param third score obtained for third roll
+     */
+    public FrameView(int first, int second, int third){
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        add(Box.createHorizontalGlue());
+        setPreferredSize(new Dimension(50, 50));
+        setMinimumSize(new Dimension(50, 50));
+        setBorder(BorderFactory.createMatteBorder(2,2,2,2, Color.black));
+
+        int total = first+second+third;
+        add(new JLabel(String.valueOf(total)), BorderLayout.PAGE_END);
+        add(Box.createHorizontalGlue());
+        add(createRollBox(first));
+        add(createRollBox(second));
+        add(createRollBox(third));
     }
 
     /**
@@ -59,30 +79,5 @@ public class FrameView extends JPanel {
         ));
         roll.setPreferredSize(new Dimension(20, 20));
         return roll;
-    }
-
-    /**
-     * Updates the score of an empty roll box and renders to updated information
-     */
-    public void addRoll(int roll, int score){
-        switch(roll){
-            case 1:
-                firstRoll = createRollBox(score);
-                break;
-            case 2:
-                secondRoll = createRollBox(score);
-                break;
-            case 3:
-                if(hasThirdRoll()) thirdRoll = createRollBox(score);
-                break;
-        }
-        render();
-    }
-
-    /**
-     * @return true if this.FrameView represents the 10th frame, false otherwise
-     */
-    public boolean hasThirdRoll(){
-        return hasThirdRoll;
     }
 }

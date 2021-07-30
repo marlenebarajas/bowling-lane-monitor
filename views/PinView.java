@@ -5,17 +5,14 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 public class PinView extends JPanel {
-    boolean[] pinState;
+    boolean[] pinState = new boolean[]{true, true, true, true, true, true, true, true, true, true};
 
-    public PinView(boolean[] pinState){
-        this.pinState = pinState;
-
+    public PinView(){
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
                 "Pins");
         title.setTitleJustification(TitledBorder.CENTER);
         setBorder(title);
-
         render(pinState);
     }
 

@@ -2,20 +2,26 @@ package BowlingScoreboard.views;
 
 import javax.swing.*;
 
+/**
+ * Creates a bowling scorecard using a bowler's scores
+ */
 public class FramesView extends JPanel {
-    FrameView[] frames = new FrameView[10];
+    FrameView[] frames = new FrameView[11];
+    int[] scores; int totalScore;
 
-    public FramesView(){
+    /**
+     * @param scores scores[20] corresponding to scores reached in every roll
+     */
+    public FramesView(int[] scores, int total){
+        this.scores = scores;
+        this.totalScore = total;
         setLayout(new BoxLayout(this,BoxLayout.LINE_AXIS));
-        initialize();
         render();
     }
 
-    /**
-     * Displays frame scorecard
-     */
     private void render(){
         removeAll();
+        createFrames();
         for(FrameView frame:frames){
             add(frame);
         }
@@ -24,27 +30,18 @@ public class FramesView extends JPanel {
     }
 
     /**
-     * Initializes 10 empty frame on the scorecard
+     * Creates FrameView for each frame in scorecard and populates FrameView[]
      */
-    private void initialize(){
+    private void createFrames(){
         for(int i=0; i<9; i++){
-            FrameView frame = new FrameView(false);
-            frames[i] = frame;
+            int firstRoll = scores[i*2];
+            int secondRoll = scores[(i*2)+1];
+            frames[i] = new FrameView(firstRoll, secondRoll);
         }
         //tenth frame has three rolls
-        FrameView frame = new FrameView(true);
-        add(frame);
-        frames[9] = frame;
-    }
-
-    /**
-     * Updates the display frame score on the scorecard
-     * @param frame (n-1)th frame in frames[], to be updated
-     * @param roll int 1, 2, or 3
-     * @param score int point value of most recent roll
-     */
-    public void setFrame(int frame, int roll, int score){
-        frames[frame-1].addRoll(roll, score);
-        render();
+        int firstRoll = scores[18]; int secondRoll = scores[19]; int thirdRoll = scores[20];
+        frames[9] = new FrameView(firstRoll, secondRoll, thirdRoll);
+        //total scores
+        frames[10] = new FrameView(totalScore);
     }
 }

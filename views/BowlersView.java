@@ -13,16 +13,10 @@ import java.awt.*;
  */
 public class BowlersView extends JPanel {
     SessionController controller;
-    Bowler[] bowlers; int bowlerLimit;
-    BowlerView[] views;
-
     JTextField nameInput; Component nameField; Component addBowler;
 
-    public BowlersView(SessionController controller, Bowler[] bowlers, int limit){
+    public BowlersView(SessionController controller){
         this.controller = controller;
-        this.bowlerLimit = limit;
-        this.bowlers = bowlers;
-        this.views = new BowlerView[limit];
         addBowler = addBowlerBtn();
         nameField = nameField();
 
@@ -32,15 +26,15 @@ public class BowlersView extends JPanel {
                 BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Bowlers"),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10))
         );
-        render(true);
+        render();
     }
 
     /**
      * Displays every BowlerView in views
      */
-    public void render(boolean editable){
+    public void render(){
         removeAll();
-        add(bowlerList(editable),BorderLayout.PAGE_START);
+        add(bowlerList(!controller.isGameActive()),BorderLayout.PAGE_START);
         revalidate();
         repaint();
     }
@@ -49,19 +43,18 @@ public class BowlersView extends JPanel {
         JPanel showBowlers = new JPanel();
         showBowlers.setLayout(new BoxLayout(showBowlers, BoxLayout.PAGE_AXIS));
 
+        Bowler[] bowlers = controller.getBowlers();
         int count = 0;
-        for(int i=0; i<bowlerLimit;i++){
+        for(int i=0; i<bowlers.length;i++){
             if(bowlers[i]!=null){
                 count++;
-                if(views[i]==null) views[i] = new BowlerView(i, bowlers[i]);
-                if(bowlers[i].isActive()){
-                    views[i].setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.blue));
-                    showBowlers.add(views[i]);
-                } else showBowlers.add(views[i]);
+                BowlerView view = new BowlerView(i, bowlers[i]);
+                if(bowlers[i].isActive()) view.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Color.blue));
+                showBowlers.add(view);
             } else break;
         }
-        if(count!=bowlerLimit && editable){
-            showBowlers.add(nameField);
+        if(count!=controller.getBowlerLimit() && editable){
+            showBowlers.add(nameInput);
             showBowlers.add(addBowler);
         }
         return showBowlers;

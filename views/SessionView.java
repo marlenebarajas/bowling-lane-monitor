@@ -1,27 +1,31 @@
 package BowlingScoreboard.views;
 
-import BowlingScoreboard.models.BowlingSession;
 import BowlingScoreboard.controllers.SessionController;
+import BowlingScoreboard.models.Bowler;
+import BowlingScoreboard.models.BowlingGame;
+import BowlingScoreboard.models.PinState;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.PriorityQueue;
 
 public class SessionView implements Observer {
-    private BowlingSession session;
-    SessionController sessionController;
+    private SessionController controller;
+    private JFrame frame;
+    private PinView pins;
+    private BowlersView bowlers;
+    private SessionControlsView controls;
+    private EndView end;
+    private boolean showingEnd;
+
     private boolean active = false; //is this game active?
 
-    JFrame frame;
-    PinView pins;
-    BowlersView bowlers;
-    SessionControlsView controls;
-
-    public SessionView(BowlingSession session){
-        this.session = session;
-        session.addObserver(this);
-        sessionController = new SessionController(session);
+    public SessionView(SessionController controller){
+        this.controller = controller;
+        this.showingEnd = false;
+        controller.linkModels(this);
         createAndShowGUI();
     }
 
@@ -33,11 +37,10 @@ public class SessionView implements Observer {
         frame.setPreferredSize(new Dimension(1200,800));
 
         //Create content for window.
-        this.pins = new PinView(session.getState());
+        this.pins = new PinView();
+        this.bowlers = new BowlersView(controller);
+        this.controls = new SessionControlsView(controller);
 
-        this.bowlers = new BowlersView(sessionController, session.getBowlers(), session.getBowlerLimit());
-
-        this.controls = new SessionControlsView(sessionController);
         //Add content to the window.
         frame.add(pins, BorderLayout.LINE_START);
         frame.add(bowlers, BorderLayout.CENTER);
@@ -48,42 +51,53 @@ public class SessionView implements Observer {
         frame.setVisible(true);
     }
 
-    private void finish(){
-
-    }
-
-    private void reset(){
-        frame.remove(bowlers);
-        this.active = false;
-        this.bowlers = new BowlersView(sessionController, session.getBowlers(), session.getBowlerLimit());
-        frame.add(bowlers, BorderLayout.CENTER);
-        frame.revalidate();
-        frame.repaint();
+    /**
+     * Exchanges PinView with EndView
+     */
+    private void endScreen(PriorityQueue leaderboard){
+        frame.remove(pins);
+        this.end = new EndView(leaderboard);
+        frame.add(end, BorderLayout.LINE_START);
+        this.showingEnd = true;
+        frame.pack();
     }
 
     /**
-     * Called when BowlingSession starts, end, or updates the amount of bowlers
-     * @param o BowlingSession
-     * @param arg boolean, true when a game is starts, false otherwise
+     * Exchanges EndView with PinView
+     */
+    private void pinScreen(){
+        frame.remove(end);
+        frame.add(pins, BorderLayout.LINE_START);
+        frame.pack();
+    }
+
+    /**
+     * Updates display of the different components in this view
+     * @param o PinState, BowlingGame, or Bowler
+     * @param arg dependent on o, if:
+     *            PinState - boolean[] of new pin state;
+     *            Bowler - null;
+     *            BowlingGame - null, true, or false
      */
     @Override
     public void update(Observable o, Object arg) {
-        if((boolean) arg){
-            this.active = true;
-            bowlers.render(false);
-            controls.showEnd();
-        } else{
-            if(active){ // a game session just ended
-                //show results
-                //display button to start a new session that calls reset();
-                finish();
-                reset();
-                controls.showStart();
-                this.active = false;
-            } else bowlers.render(true);
+        if(o instanceof PinState){
+            pins.render((boolean[]) arg);
         }
-
-        //also update PinView here
-        pins.render(session.getState());
+        if(o instanceof Bowler) bowlers.render();
+        if(o instanceof BowlingGame){
+            if(arg==null){ //continuing game
+                bowlers.render();
+                if(showingEnd) pinScreen();
+                controls.showStart();
+            }
+            else if((boolean)arg){ //start game condition
+                controller.linkBowlers(this);
+                controls.showEnd();
+            }
+            else{ //end game condition
+                endScreen(controller.leaderboard());
+            }
+        }
     }
 }
