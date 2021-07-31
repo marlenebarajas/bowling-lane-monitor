@@ -7,14 +7,16 @@ import javax.swing.*;
  */
 public class FramesView extends JPanel {
     FrameView[] frames = new FrameView[11];
-    int[] scores; int totalScore;
+    int[] scores;
 
     /**
-     * @param scores scores[20] corresponding to scores reached in every roll
+     * @param scores int[31] where frame total is followed by roll scores
+     *               ex. scores[0] = total score for frame 1
+     *               scores[1] = first roll's score
+     *               scores[2] = second roll's score
      */
-    public FramesView(int[] scores, int total){
+    public FramesView(int[] scores){
         this.scores = scores;
-        this.totalScore = total;
         setLayout(new BoxLayout(this,BoxLayout.LINE_AXIS));
         render();
     }
@@ -29,19 +31,20 @@ public class FramesView extends JPanel {
         repaint();
     }
 
+
     /**
      * Creates FrameView for each frame in scorecard and populates FrameView[]
      */
     private void createFrames(){
-        for(int i=0; i<9; i++){
-            int firstRoll = scores[i*2];
-            int secondRoll = scores[(i*2)+1];
-            frames[i] = new FrameView(firstRoll, secondRoll);
+        //first 9 frames
+        for(int i=0;i<9;i++){
+            int idx = (i*3); // index first value of this frame
+            frames[i] = new FrameView(scores[idx], scores[idx+1], scores[idx+2]);
         }
         //tenth frame has three rolls
-        int firstRoll = scores[18]; int secondRoll = scores[19]; int thirdRoll = scores[20];
-        frames[9] = new FrameView(firstRoll, secondRoll, thirdRoll);
+        frames[9] = new FrameView(scores[27], scores[28], scores[29], scores[30]);
+
         //total scores
-        frames[10] = new FrameView(totalScore);
+        frames[10] = new FrameView(scores[27]);
     }
 }

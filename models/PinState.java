@@ -70,7 +70,7 @@ public class PinState extends Observable {
     private boolean[] randomRoll(){
         boolean[] newState = getState();
         Random rnd = new Random();
-        int changes = rnd.nextInt(10); //0-9
+        int changes = rnd.nextInt(11); //0-10
         int idx = rnd.nextInt(10);
         for(int i=0;i<changes;i++){
             if(state[idx]){

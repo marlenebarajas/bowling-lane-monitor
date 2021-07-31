@@ -103,13 +103,21 @@ public class BowlingGame extends Observable {
         }
         this.prevState = update.clone();
         bowlers[currentTurn].addScore(frame, roll, score);
+        next(score);
     }
 
     /**
-     * Moves the game session to the next roll, taking care to change frame # and roll #. Ends game if necessary.
+     * Moves the game session to the next roll, taking care to change frame # and roll #.
+     * Ends game if necessary.
+     * @param score if 10(a strike) and not the final frame, move to the next player.
      */
-    public void next(){
-        if(frame<10){ //two rolls per frames 1-9
+    public void next(int score){
+        if(score==10 && frame!=10){
+            bowlers[currentTurn].setActive(false);
+            currentTurn++;
+            roll=1;
+        }
+        else if(frame<10){ //two rolls per frames 1-9
             if(roll == 2) {
                 bowlers[currentTurn].setActive(false);
                 roll = 1;
@@ -118,13 +126,23 @@ public class BowlingGame extends Observable {
                     frame++;
                 } else currentTurn++;
             } else roll++;
-        } else { //three rolls in the last frame
+        } else { // potentially three rolls in the last frame
             if (roll == 3) {
                 bowlers[currentTurn].setActive(false);
                 roll = 1;
                 if(currentTurn == (numOfBowlers-1)) { //end condition
                     setActive(false);
                 } else currentTurn++;
+            } else if(roll == 2){
+                if(bowlers[currentTurn].hasThirdRoll()) roll++;
+                else{
+                    if(currentTurn == (numOfBowlers-1)) { //end condition
+                        setActive(false);
+                    } else{
+                        roll = 1;
+                        currentTurn++;
+                    }
+                }
             } else roll++;
         }
     }

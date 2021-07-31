@@ -68,11 +68,12 @@ public class SessionController {
 
         int turn = 0;
         while(session.isActive()){
+            if(session.getRoll()==1){
+                state.reset();
+            }
             //wait for roll, then...
             session.calculateScore(state.getState());
             session.updateLeaderboard();
-            session.next();
-            if(turn!= session.getCurrentTurn()) state.reset();
         }
     }
 
@@ -90,7 +91,7 @@ public class SessionController {
             state.runSimulated();
             session.calculateScore(state.getState());
             session.updateLeaderboard();
-            session.next();
+            //session.next();
         }
     }
 

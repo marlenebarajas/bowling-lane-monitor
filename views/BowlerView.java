@@ -24,7 +24,7 @@ public class BowlerView extends JPanel{
     private void render(){
         removeAll();
         add(name);
-        frames = new FramesView(bowler.getScores(), bowler.getScore());
+        frames = new FramesView(bowler.getScores());
         add(frames);
         revalidate();
         repaint();
