@@ -7,3 +7,4 @@ The input to the scoreboard controller is the lane control hardware that reflect
 ### Entities
 ![Entity Diagram](https://i.imgur.com/pmP3ejD.png)
 ### System Design
+![Classes Diagram](https://i.imgur.com/tMQDYiC.png)
