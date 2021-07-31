@@ -5,5 +5,5 @@ Design entities and interfaces to model a scoreboard controller for bowling, kee
 The input to the scoreboard controller is the lane control hardware that reflects the pin state (i.e. how many pins are up/down).
 ## Design
 ### Entities
-[Entity Diagram](https://i.imgur.com/pmP3ejD.png)
+![Entity Diagram](https://i.imgur.com/pmP3ejD.png)
 ### System Design
